@@ -1,0 +1,6 @@
+steps:
+  - name: ubuntu
+    id: just a demo
+    args:
+      - echo
+      - Probably the world's simplest pipeline. by Hiroko test aaa
