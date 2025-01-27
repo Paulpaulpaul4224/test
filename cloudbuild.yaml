@@ -1,64 +1,32 @@
 steps:
-  - name: gcr.io/cloud-builders/gcloud
-    env:
-      - APP_SECRET_KEY_NAME=$_APP_SECRET_KEY_NAME
-    id: Copy app.secrets.yaml
-    script: >
-      #!/usr/bin/env bash
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - itb-backend
+      - ./backend
+    id: Build
 
-      gcloud secrets versions access latest --secret=$APP_SECRET_KEY_NAME
-      --format='get(payload.data)' | tr '_-' '/+' | base64 -d >
-      backend/app.secrets.yaml
-
-      if [ ! -f backend/app.secrets.yaml ]; then
-        exit 2
-      fi
-
-  - name: gcr.io/cloud-builders/gcloud
-    env:
-      - GOOGLE_JSON_KEY_NAME=$_GOOGLE_JSON_KEY_NAME
-      - RAILS_ENV=$_RAILS_ENV
-    id: Copy google credential json
-    script: >
-      #!/usr/bin/env bash
-
-      gcloud secrets versions access latest --secret=$GOOGLE_JSON_KEY_NAME
-      --format='get(payload.data)' | tr '_-' '/+' | base64 -d >
-      backend/config/credentials/google/${RAILS_ENV}.json
-
-      ls -la backend/config/credentials/google/
-
-      if [ ! -f backend/config/credentials/google/${RAILS_ENV}.json ]; then
-        exit 2
-      fi
-
-  - name: ubuntu
+  - name: itb-backend
     env:
       - RAILS_ENV=$_RAILS_ENV
-    id: Create master.key
+    id: Migration
     secretEnv:
       - RAILS_MASTER_KEY
-    script: |
+    script: >
       #!/usr/bin/env bash
-      
-      echo $RAILS_MASTER_KEY > backend/config/credentials/$RAILS_ENV.key
-      if [ ! -f backend/config/credentials/$RAILS_ENV.key ]; then
-        exit 2
-      fi
 
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    args:
-      - gcloud
-      - app
-      - deploy
-      - backend/app.$_RAILS_ENV.yaml
-    id: Deploy
+      cd /itb
 
+      bundle exec rails db:migrate db:migrate:views master_data_update:services
+      master_data_update:itb
+
+options:
+  pool:
+    name: projects/$PROJECT_ID/locations/asia-northeast1/workerPools/itboard-private-pool
 substitutions:
-  _APP_SECRET_KEY_NAME: APP_SECRETS_xxx
+  _RAILS_MASTER_KEY_NAME: secret master key name
   _RAILS_ENV: env name
-  _RAILS_MASTER_KEY_NAME: ITB_RAILS_MASTER_KEY_xxx
-  _GOOGLE_JSON_KEY_NAME: ITB_GOOGLE_JSON_xxx
 availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/$_RAILS_MASTER_KEY_NAME/versions/1
