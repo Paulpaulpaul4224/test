@@ -2,6 +2,3 @@ steps:
  - name: 'gcr.io/cloud-builders/gcloud'
    script: |
     gcloud storage ls
-
-options:
- logging: CLOUD_LOGGING_ONLY
