@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-east1-docker.pkg.dev/myproject/myimage', '.']
+  args: ['build', '-t', 'asia-northeast1-docker.pkg.dev/myproject/myimage', '.']
 options:
   logging: CLOUD_LOGGING_ONLY
 
