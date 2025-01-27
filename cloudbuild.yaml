@@ -1,6 +1,11 @@
 steps:
-  - name: ubuntu
-    id: just a demo
-    args:
-      - echo
-      - Probably the world's simplest pipeline. by Hiroko test aaa
+- name: 'gcr.io/cloud-builders/docker'
+ args:
+   - build
+   - '-t'
+   - itb-backend
+   - ./backend
+ id: Build
+options:
+ logging: CLOUD_LOGGING_ONLY
+
