@@ -1,11 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
- args:
-   - build
-   - '-t'
-   - itb-backend
-   - ./backend
- id: Build
+  args: ['build', '-t', 'us-east1-docker.pkg.dev/myproject/myimage', '.']
 options:
- logging: CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY
 
