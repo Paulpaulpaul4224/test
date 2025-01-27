@@ -2,5 +2,7 @@ steps:
 - name: 'ubuntu'
   args: ['echo', 'hello world']
 options:
+  sourceProvenanceHash: ['SHA256']
+options:
   logging: CLOUD_LOGGING_ONLY
 
