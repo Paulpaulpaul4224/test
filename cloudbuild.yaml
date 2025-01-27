@@ -1,36 +1,9 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - build
-      - '-t'
-      - itb-backend
-      - ./backend
-    id: Build
-
-  - name: itb-backend
-    env:
-      - RAILS_ENV=$_RAILS_ENV
-    id: Migration
-    secretEnv:
-      - RAILS_MASTER_KEY
-    script: >
-      #!/usr/bin/env bash
-
-      cd /itb
-
-      bundle exec rails db:migrate db:migrate:views master_data_update:services
-      master_data_update:itb
+  - name: gcr.io/cloud-builders/gcloud
+  id: migrate
+  script: >
+    #!/usr/bin/env bash
+    gcloud storage ls
 
 options:
-  pool:
-    name: projects/$PROJECT_ID/locations/asia-northeast1/workerPools/itboard-private-pool
-substitutions:
-  _RAILS_MASTER_KEY_NAME: secret master key name
-  _RAILS_ENV: env name
-availableSecrets:
-  secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/$_RAILS_MASTER_KEY_NAME/versions/1
-      env: RAILS_MASTER_KEY
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+ logging: CLOUD_LOGGING_ONLY
