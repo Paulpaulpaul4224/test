@@ -2,3 +2,6 @@ steps:
  - name: 'gcr.io/cloud-builders/gcloud'
    script: |
     gcloud compute instances list
+
+options:
+ logging: CLOUD_LOGGING_ONLY
