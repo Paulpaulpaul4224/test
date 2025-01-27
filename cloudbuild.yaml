@@ -1,7 +1,7 @@
 steps:
-  - name: gcr.io/cloud-builders/gcloud
-  id: migrate
-  script: >
+ - name: gcr.io/cloud-builders/gcloud
+   id: migrate
+   script: >
     #!/usr/bin/env bash
     gcloud storage ls
 
